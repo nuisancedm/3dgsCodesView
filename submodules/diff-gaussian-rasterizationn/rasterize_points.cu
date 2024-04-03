@@ -74,11 +74,15 @@ RasterizeGaussiansCUDA(
   //@@ raddi：高斯数量*1
   torch::Tensor radii = torch::full({P}, 0, means3D.options().dtype(torch::kInt32));
   
+  //@@ 创建一个CUDA设备对象
   torch::Device device(torch::kCUDA);
+  //@@ 创建一个张量选项对象 字节：kByte 8bit无符号整数
   torch::TensorOptions options(torch::kByte);
+  //@@ 创建一堆tensor 几何缓冲区，装箱缓冲区，rgb缓冲区
   torch::Tensor geomBuffer = torch::empty({0}, options.device(device));
   torch::Tensor binningBuffer = torch::empty({0}, options.device(device));
   torch::Tensor imgBuffer = torch::empty({0}, options.device(device));
+  //@@ 这三个缓冲区的resize函数
   std::function<char*(size_t)> geomFunc = resizeFunctional(geomBuffer);
   std::function<char*(size_t)> binningFunc = resizeFunctional(binningBuffer);
   std::function<char*(size_t)> imgFunc = resizeFunctional(imgBuffer);
@@ -86,12 +90,12 @@ RasterizeGaussiansCUDA(
   int rendered = 0;
   if(P != 0)
   {
-	  int M = 0;
+	  int M = 0; //@@ M是sh的第二维，16
 	  if(sh.size(0) != 0)
 	  {
 		M = sh.size(1);
       }
-
+	  
 	  rendered = CudaRasterizer::Rasterizer::forward(
 	    geomFunc,
 		binningFunc,
