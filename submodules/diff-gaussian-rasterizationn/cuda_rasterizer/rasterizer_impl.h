@@ -29,16 +29,16 @@ namespace CudaRasterizer
 	struct GeometryState
 	{
 		size_t scan_size;
-		float* depths;
+		float* depths; //@@ preprocess
 		char* scanning_space;
-		bool* clamped;
+		bool* clamped; //@@ preprocess
 		int* internal_radii;
-		float2* means2D;
-		float* cov3D;
-		float4* conic_opacity;
-		float* rgb;
-		uint32_t* point_offsets;
-		uint32_t* tiles_touched;
+		float2* means2D; //@@ preprocess
+		float* cov3D; //@@ preprocess
+		float4* conic_opacity; //@@ preprocess
+		float* rgb; //@@ preprocess
+		uint32_t* point_offsets; //@@ 前缀和
+		uint32_t* tiles_touched; //@@ preprocess
 
 		static GeometryState fromChunk(char*& chunk, size_t P);
 	};

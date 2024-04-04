@@ -100,12 +100,17 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
 
         #@@ 开渲，相机类记得debug看一下有哪些属性
         render_pkg = render(viewpoint_cam, gaussians, pipe, bg)
+        #@@ 保存渲染结果
         image, viewspace_point_tensor, visibility_filter, radii = render_pkg["render"], render_pkg["viewspace_points"], render_pkg["visibility_filter"], render_pkg["radii"]
 
         # Loss
+        #@@ 读取真值图片
         gt_image = viewpoint_cam.original_image.cuda()
+        #@@ L1绝对值loss
         Ll1 = l1_loss(image, gt_image)
+        #@@ 合计两个loss
         loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+        
         loss.backward()
 
         iter_end.record()

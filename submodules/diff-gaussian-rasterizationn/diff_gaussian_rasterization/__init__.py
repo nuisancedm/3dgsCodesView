@@ -93,6 +93,7 @@ class _RasterizeGaussians(torch.autograd.Function):
             num_rendered, color, radii, geomBuffer, binningBuffer, imgBuffer = _C.rasterize_gaussians(*args)
 
         # Keep relevant tensors for backward
+        #@@ 保存结果用于计算梯度
         ctx.raster_settings = raster_settings
         ctx.num_rendered = num_rendered
         ctx.save_for_backward(colors_precomp, means3D, scales, rotations, cov3Ds_precomp, radii, sh, geomBuffer, binningBuffer, imgBuffer)
@@ -102,11 +103,13 @@ class _RasterizeGaussians(torch.autograd.Function):
     def backward(ctx, grad_out_color, _):
 
         # Restore necessary values from context
+        #@@ 从ctx中恢复所有需要的tensor
         num_rendered = ctx.num_rendered
         raster_settings = ctx.raster_settings
         colors_precomp, means3D, scales, rotations, cov3Ds_precomp, radii, sh, geomBuffer, binningBuffer, imgBuffer = ctx.saved_tensors
 
         # Restructure args as C++ method expects them
+        #@@ 和正向一样的操作
         args = (raster_settings.bg,
                 means3D, 
                 radii, 
@@ -139,6 +142,7 @@ class _RasterizeGaussians(torch.autograd.Function):
                 print("\nAn error occured in backward. Writing snapshot_bw.dump for debugging.\n")
                 raise ex
         else:
+            #@@ 进入cuda 计算所有需要计算的梯度
              grad_means2D, grad_colors_precomp, grad_opacities, grad_means3D, grad_cov3Ds_precomp, grad_sh, grad_scales, grad_rotations = _C.rasterize_gaussians_backward(*args)
 
         grads = (
