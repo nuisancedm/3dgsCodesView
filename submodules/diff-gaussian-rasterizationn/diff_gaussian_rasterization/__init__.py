@@ -103,7 +103,7 @@ class _RasterizeGaussians(torch.autograd.Function):
     def backward(ctx, grad_out_color, _):
 
         # Restore necessary values from context
-        #@@ 从ctx中恢复所有需要的tensor
+        #@@ 从ctx中恢复所有需要的tensor,
         num_rendered = ctx.num_rendered
         raster_settings = ctx.raster_settings
         colors_precomp, means3D, scales, rotations, cov3Ds_precomp, radii, sh, geomBuffer, binningBuffer, imgBuffer = ctx.saved_tensors

@@ -388,7 +388,7 @@ renderCUDA(
 		for (int j = 0; !done && j < min(BLOCK_SIZE, toDo); j++)
 		{
 			// Keep track of current position in range
-			//@@ 贡献者++，也代表了这是在处理第几个贡献者
+			//@@ 贡献者++，也代表了这是在处理从前往后第几个贡献者
 			contributor++;
 
 			// Resample using conic matrix (cf. "Surface 

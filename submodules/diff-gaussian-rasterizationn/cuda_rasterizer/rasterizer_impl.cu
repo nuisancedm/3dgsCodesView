@@ -383,16 +383,16 @@ void CudaRasterizer::Rasterizer::backward(
 	char* geom_buffer,
 	char* binning_buffer,
 	char* img_buffer,
-	const float* dL_dpix,
-	float* dL_dmean2D,
-	float* dL_dconic,
-	float* dL_dopacity,
-	float* dL_dcolor,
-	float* dL_dmean3D,
-	float* dL_dcov3D,
-	float* dL_dsh,
-	float* dL_dscale,
-	float* dL_drot,
+	const float* dL_dpix, //@@ dL_dOutcolor [1920*1080, 3]
+	float* dL_dmean2D,    //@@ torch::zeros({P, 3}, means3D.options());
+	float* dL_dconic,	  //@@ torch::zeros({P, 2, 2}, means3D.options());
+	float* dL_dopacity,   //@@ torch::zeros({P, 1}, means3D.options());
+	float* dL_dcolor,	  //@@ skip
+	float* dL_dmean3D, 	  //@@ torch::zeros({P, 3}, means3D.options());
+	float* dL_dcov3D,	  //@@ skip
+	float* dL_dsh,		  //@@ torch::zeros({P, M, 3}, means3D.options());
+	float* dL_dscale,     //@@ torch::zeros({P, 3}, means3D.options());
+	float* dL_drot,		  //@@ torch::zeros({P, 4}, means3D.options());
 	bool debug)
 {
 	GeometryState geomState = GeometryState::fromChunk(geom_buffer, P);
@@ -450,11 +450,11 @@ void CudaRasterizer::Rasterizer::backward(
 		focal_x, focal_y,
 		tan_fovx, tan_fovy,
 		(glm::vec3*)campos,
-		(float3*)dL_dmean2D,
-		dL_dconic,
+		(float3*)dL_dmean2D, //@@ backward::render给出的
+		dL_dconic, //@@ backward::render给出的
 		(glm::vec3*)dL_dmean3D,
-		dL_dcolor,
-		dL_dcov3D,
+		dL_dcolor, //@@ backward::render给出的
+		dL_dcov3D, 
 		dL_dsh,
 		(glm::vec3*)dL_dscale,
 		(glm::vec4*)dL_drot), debug)
