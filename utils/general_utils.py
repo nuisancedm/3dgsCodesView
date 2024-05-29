@@ -100,13 +100,16 @@ def build_rotation(r):
 
 def build_scaling_rotation(s, r):
     L = torch.zeros((s.shape[0], 3, 3), dtype=torch.float, device="cuda")
-    R = build_rotation(r)
+    R = build_rotation(r) # 这个函数生成四元数对应的旋转矩阵
 
-    L[:,0,0] = s[:,0]
+    L[:,0,0] = s[:,0] # L矩阵对角填充 缩放尺度
     L[:,1,1] = s[:,1]
     L[:,2,2] = s[:,2]
 
-    L = R @ L
+    L = R @ L # 批量矩阵乘法，如果矩阵在GPU上 那么@操作就是GPU计算，底层是cuda和cuBLAS
+    # cuBLAS 是 NVIDIA 提供的一个高性能 GPU 加速的基础线性代数子程序库（CUDA Basic Linear Algebra Subprograms）。
+    # 它是 CUDA 平台的一部分，用于在 NVIDIA GPU 上高效执行各种线性代数操作。
+    # cuBLAS 尤其适用于处理矩阵和向量的基本运算。
     return L
 
 def safe_state(silent):

@@ -9,7 +9,8 @@
 * cuda前向代码，这是学习cuda编程的很好的案例，应该深入理解。
 
 ## 3DGS notes
-
+### torch.nn.Module's subclass
+当我们创建一个继承自torch.nn.module的类时，我们通常需要定义forward方法来描述前向传播的过程。反向传播的计算是通过自动微分来实现的，因此我们不需要显示的定义backward反法，pytorch会自动记录前向传播中的操作自动计算反向传播。
 ### Parameter Track
 
 #### gaussian created:

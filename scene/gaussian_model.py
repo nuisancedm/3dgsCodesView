@@ -25,9 +25,9 @@ class GaussianModel:
 
     def setup_functions(self):
         def build_covariance_from_scaling_rotation(scaling, scaling_modifier, rotation):
-            L = build_scaling_rotation(scaling_modifier * scaling, rotation)
-            actual_covariance = L @ L.transpose(1, 2)
-            symm = strip_symmetric(actual_covariance)
+            L = build_scaling_rotation(scaling_modifier * scaling, rotation) # L是先缩放再旋转矩阵
+            actual_covariance = L @ L.transpose(1, 2) # 缩放旋转矩阵 * 缩放旋转矩阵的转置就是 协方差矩阵
+            symm = strip_symmetric(actual_covariance) # 取协方差矩阵的上三角返回。
             return symm
         
         self.scaling_activation = torch.exp
